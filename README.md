@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CampLog
+
+A mobile-first camping journal web app for tracking trips, discovering campgrounds, and sharing reviews. Built with an NPS-inspired design system.
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router, TypeScript)
+- **Styling**: Tailwind CSS with custom NPS theme tokens
+- **Database**: PostgreSQL 16 via Drizzle ORM
+- **Auth**: Auth.js v5 (Google OAuth + email/password)
+- **Photos**: Sharp for image processing, local volume storage
+- **Maps**: Mapbox GL JS
+- **Deployment**: Docker + Dokploy (self-hosted)
+
+## Features
+
+- **Trip Journal** — Log camping trips with dates, locations, tags, ratings, and notes
+- **Photo Gallery** — Upload multiple photos per trip with auto-generated thumbnails and lightbox viewing
+- **Campground Directory** — Browse and search campgrounds with map view
+- **Reviews** — Rate and review campgrounds with upvote system
+- **Location Picker** — Mapbox-powered geocoding for trip and campground locations
+- **PWA** — Installable as a home screen app on mobile
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- PostgreSQL 16
+
+### Setup
 
 ```bash
+npm install
+cp .env.example .env.local
+# Edit .env.local with your database URL, auth secret, etc.
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app auto-runs database migrations on startup via the instrumentation hook.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `AUTH_SECRET` | Random string for session encryption |
+| `AUTH_TRUST_HOST` | Set to `true` for self-hosted deployments |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | Mapbox GL access token |
+| `UPLOAD_DIR` | Photo storage directory (default: `./uploads`) |
 
-## Learn More
+### Database Scripts
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run db:generate   # Generate migration files from schema
+npm run db:migrate    # Run migrations
+npm run db:push       # Push schema directly (dev)
+npm run db:studio     # Open Drizzle Studio
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The app includes a multi-stage Dockerfile optimized for production. Deploy with any Docker-compatible platform.
 
-## Deploy on Vercel
+```bash
+docker build -t camplog .
+docker run -p 3000:3000 --env-file .env camplog
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For persistent photo storage, mount a volume to `/app/uploads`.
