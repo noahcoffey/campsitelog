@@ -1,39 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { LogIn, Eye, EyeOff } from "lucide-react";
+import { authenticate } from "@/app/(auth)/login/actions";
 
 export default function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
+    startTransition(async () => {
+      const result = await authenticate(email, password, callbackUrl);
+      if (result?.error) {
+        setError(result.error);
+      }
     });
-
-    if (result?.error) {
-      setError("Invalid email or password");
-      setLoading(false);
-    } else {
-      router.push(callbackUrl);
-      router.refresh();
-    }
   };
 
   return (
@@ -105,11 +96,11 @@ export default function LoginForm() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={isPending}
           className="flex w-full items-center justify-center gap-2 rounded-lg bg-forest px-4 py-2.5 text-sm font-medium text-white transition hover:bg-forest-light disabled:opacity-50"
         >
           <LogIn size={16} />
-          {loading ? "Signing in..." : "Sign in"}
+          {isPending ? "Signing in..." : "Sign in"}
         </button>
       </form>
 
@@ -123,7 +114,9 @@ export default function LoginForm() {
       </div>
 
       <button
-        onClick={() => signIn("google", { callbackUrl })}
+        onClick={() => {
+          window.location.href = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+        }}
         className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-white px-4 py-2.5 text-sm font-medium text-bark transition hover:bg-cream"
       >
         <svg className="h-4 w-4" viewBox="0 0 24 24">
