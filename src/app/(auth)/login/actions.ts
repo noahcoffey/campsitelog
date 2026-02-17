@@ -13,17 +13,21 @@ export async function authenticate(
   const callbackUrl = (formData.get("callbackUrl") as string) || "/trips";
 
   try {
-    await signIn("credentials", {
+    console.log("[login] attempting signIn for:", email);
+    const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
+    console.log("[login] signIn result:", result);
   } catch (error) {
+    console.log("[login] signIn error:", error);
     if (error instanceof AuthError) {
       return { error: "Invalid email or password" };
     }
     throw error;
   }
 
+  console.log("[login] redirecting to:", callbackUrl);
   redirect(callbackUrl);
 }
