@@ -1,31 +1,17 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useActionState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { LogIn, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 import { authenticate } from "@/app/(auth)/login/actions";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const callbackUrl = searchParams.get("callbackUrl") || "/trips";
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [isPending, startTransition] = useTransition();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    startTransition(async () => {
-      const result = await authenticate(email, password, callbackUrl);
-      if (result?.error) {
-        setError(result.error);
-      }
-    });
-  };
+  const [state, formAction, isPending] = useActionState(authenticate, undefined);
 
   return (
     <div className="rounded-xl border border-border bg-white p-6 shadow-sm">
@@ -33,13 +19,15 @@ export default function LoginForm() {
         Sign in to your account
       </h2>
 
-      {error && (
+      {state?.error && (
         <div className="mb-4 rounded-lg bg-danger-light px-4 py-3 text-sm text-danger">
-          {error}
+          {state.error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form action={formAction} className="space-y-4">
+        <input type="hidden" name="callbackUrl" value={callbackUrl} />
+
         <div>
           <label
             htmlFor="email"
@@ -49,9 +37,8 @@ export default function LoginForm() {
           </label>
           <input
             id="email"
+            name="email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             required
             className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-forest focus:ring-2 focus:ring-forest/20"
             placeholder="you@example.com"
@@ -68,9 +55,8 @@ export default function LoginForm() {
           <div className="relative">
             <input
               id="password"
+              name="password"
               type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               required
               className="w-full rounded-lg border border-border bg-white px-3 py-2.5 pr-10 text-sm outline-none transition focus:border-forest focus:ring-2 focus:ring-forest/20"
               placeholder="Enter your password"
