@@ -9,7 +9,7 @@ import { authenticate } from "@/app/(auth)/login/actions";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/trips";
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const [showPassword, setShowPassword] = useState(false);
   const [state, formAction, isPending] = useActionState(authenticate, undefined);
 

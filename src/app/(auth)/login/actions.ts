@@ -10,7 +10,7 @@ export async function authenticate(
 ) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const callbackUrl = (formData.get("callbackUrl") as string) || "/trips";
+  const callbackUrl = (formData.get("callbackUrl") as string) || "/dashboard";
 
   try {
     await signIn("credentials", {
