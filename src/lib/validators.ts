@@ -42,16 +42,16 @@ export const resetPasswordSchema = z
 
 export const tripSchema = z.object({
   title: z.string().min(1, "Title is required").max(255),
-  description: z.string().optional(),
-  locationName: z.string().max(255).optional(),
-  latitude: z.number().min(-90).max(90).optional(),
-  longitude: z.number().min(-180).max(180).optional(),
+  description: z.string().nullable().optional(),
+  locationName: z.string().max(255).nullable().optional(),
+  latitude: z.number().min(-90).max(90).nullable().optional(),
+  longitude: z.number().min(-180).max(180).nullable().optional(),
   startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().optional(),
+  endDate: z.string().nullable().optional(),
   tags: z.array(z.string()).default([]),
-  campgroundId: z.string().uuid().optional(),
-  rating: z.number().int().min(1).max(5).optional(),
-  notes: z.string().optional(),
+  campgroundId: z.string().uuid().nullable().optional(),
+  rating: z.number().int().min(1).max(5).nullable().optional(),
+  notes: z.string().nullable().optional(),
   isPublic: z.boolean().default(false),
 });
 
