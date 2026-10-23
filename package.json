@@ -18,12 +18,12 @@
     "drizzle-orm": "^0.45.1",
     "lucide-react": "^0.564.0",
     "mapbox-gl": "^3.18.1",
-    "next": "16.1.6",
-    "next-auth": "^5.0.0-beta.30",
+    "next": "16.4.2",
+    "next-auth": "^5.0.0-beta.32",
     "pg": "^8.18.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.5",
     "uuid": "^13.0.0",
     "zod": "^4.3.6"
   },
@@ -38,7 +38,7 @@
     "@types/uuid": "^10.0.0",
     "drizzle-kit": "^0.31.9",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.4.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
