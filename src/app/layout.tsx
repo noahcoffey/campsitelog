@@ -27,6 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Tally analytics (cookieless); tracks client-side navigations via pushState */}
+        <script defer data-site="tl_lpdx93erdehe" src="https://tally.coffeyconsult.com/js/t.js" />
+      </head>
       <body className={`${inter.variable} ${rokkitt.variable} antialiased`}>
         {children}
       </body>
