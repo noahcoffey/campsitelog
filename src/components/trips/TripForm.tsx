@@ -71,6 +71,10 @@ export default function TripForm({ initialData }: TripFormProps) {
     }
 
     const trip = await res.json();
+    if (!isEditing) {
+      // Tally analytics goal (the tracker defines window.tally once loaded)
+      (window as Window & { tally?: (name: string) => void }).tally?.("Trip Logged");
+    }
     router.push(`/trips/${trip.id}`);
     router.refresh();
   };
