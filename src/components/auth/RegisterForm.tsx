@@ -40,6 +40,9 @@ export default function RegisterForm() {
       return;
     }
 
+    // Tally analytics goal (the tracker defines window.tally once loaded)
+    (window as Window & { tally?: (name: string) => void }).tally?.("Signup");
+
     // Auto sign in after registration
     const result = await signIn("credentials", {
       email,
