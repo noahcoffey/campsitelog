@@ -70,3 +70,11 @@ docker run -p 3000:3000 --env-file .env camplog
 ```
 
 For persistent photo storage, mount a volume to `/app/uploads`.
+
+## Testing
+
+```bash
+npm test   # type-check (tsc --noEmit) + Vitest unit tests
+```
+
+Tests live in `tests/` and need no database, secrets or network: the Drizzle `db`, `auth()` and `fetch` are mocked (see `tests/db-mock.ts`). They cover the zod validators, auth middleware callbacks, Mapbox geocoding, photo processing with sharp, the uploads file route, and the register/trips/upvote API handlers. CI (`.github/workflows/test.yml`) also runs `npm run build` with dummy env vars.
